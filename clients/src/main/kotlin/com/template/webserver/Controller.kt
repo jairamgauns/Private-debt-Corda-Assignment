@@ -181,7 +181,6 @@ class Controller(rpc: NodeRPCConnection) {
                             loanState.linearId
                     ).toSimpleObj()*/
                     loanState.toSimpleObj()
-
                 }
     }
 
