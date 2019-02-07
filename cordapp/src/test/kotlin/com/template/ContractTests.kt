@@ -46,6 +46,8 @@ abstract class ContractTests {
     protected val thousandDollarLoan = LoanState(bob.party,alice.party,1000,1000,5,0,5, Instant.now())
     protected val zeroLoan = LoanState(bob.party, alice.party,0,0,0,0,2, Instant.now())
 
+    protected val requestLoan=RequestLoanState(alice.party,charlie.party,1000,5,5,bob.party,status="REQUEST")
+
     @Test
     fun `dummy test`() {
 

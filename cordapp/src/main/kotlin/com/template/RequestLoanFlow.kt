@@ -5,6 +5,7 @@ import net.corda.core.contracts.Amount
 import net.corda.core.contracts.Command
 import net.corda.core.flows.*
 import net.corda.core.identity.Party
+import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
 import java.util.*
@@ -14,13 +15,13 @@ import java.util.*
 class RequestLoanFlow(val amount: Long,
                       val interestRate: Long,
                       val paymentSchedule: Long,
-                      val intermediary: Party) : FlowLogic<Unit>() {
+                      val intermediary: Party) : FlowLogic<SignedTransaction>() {
 
     override val progressTracker: ProgressTracker? = ProgressTracker()
 
     @Suspendable
     @Throws(FlowException::class)
-    override fun call() {
+    override fun call(): SignedTransaction {
 
         val output = RequestLoanState(ourIdentity, intermediary, amount,interestRate,paymentSchedule,intermediary)
 
@@ -60,6 +61,8 @@ class RequestLoanFlow(val amount: Long,
         }
         // Broadcast this transaction to all parties on this business network.
         subFlow(BroadcastLoanRequest(ftx, broadcastLenderOrRegList))
+
+        return(ftx)
 
     }
 
