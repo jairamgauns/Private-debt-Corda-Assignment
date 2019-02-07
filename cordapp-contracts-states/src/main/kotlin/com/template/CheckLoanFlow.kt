@@ -55,7 +55,7 @@ class CheckLoanFlow(private val stateRef: StateRef) : FlowLogic<Unit>(){
             val requiredSigners = listOf(ourIdentity.owningKey )
             val command = Command(RequestAndNegotiateLoanContract.Commands.PaidLoan(), requiredSigners)
             //Creating an output
-            val output = inputState.copy(status = "PAID")
+         //   val output = inputState.copy(status = "PAID")
 
             txBuilder.addInputState(input)
          //   txBuilder.addOutputState(output, RequestAndNegotiateLoanContract.ID)
