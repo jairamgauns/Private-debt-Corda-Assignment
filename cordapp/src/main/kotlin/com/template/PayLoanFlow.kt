@@ -28,8 +28,11 @@ class PayLoanFlow(val requestRef: UniqueIdentifier, val payAmount: Long) : FlowL
         val updateLoanAmountPaid = input.loanAmountPaid + payAmount
         val updateCalLoanAmount = input.payableLoanAmount - payAmount
 
+        var updateStatus = "PENDING"
+        if(updateCalLoanAmount == 0L)
+            updateStatus = "PAID"
         //Creating an output
-        val output = input.copy(loanAmountPaid = updateLoanAmountPaid, payableLoanAmount = updateCalLoanAmount)
+        val output = input.copy(loanAmountPaid = updateLoanAmountPaid, payableLoanAmount = updateCalLoanAmount, status = updateStatus)
 
         //Creating Command
         val requiredSigners = listOf(ourIdentity.owningKey, input.lender.owningKey)
