@@ -17,19 +17,76 @@ import org.junit.Test
 class RequestAndNegotiateLoanContractTest: ContractTests(){
 
     @Test
-    fun `issue loan request must have no inputs`() {
+    @Throws(Exception::class)
+    fun `No input should be consumed when requesting Loan`() {
         ledgerServices.ledger {
             transaction {
-               // input(ID, DummyState())
-                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
-                output(ID, zeroLoan)
-                this `fails with` "No inputs should be consumed when issuing a loan request."
-            }
-            transaction {
-                output(ID, thousandDollarLoan)
+                output(ID, requestLoan)
                 command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
                 verifies() // As there are no input states.
             }
+
+            transaction {
+                input(ID, DummyState())
+                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                output(ID, requestLoan)
+                this `fails with` "No input should be consumed when requesting Loan"
+            }
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `Only one request loan state should be created`() {
+        ledgerServices.ledger {
+            transaction {
+                output(ID, requestLoan)
+                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                verifies() // As there are no input states.
+            }
+
+            transaction {
+                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                output(ID, requestLoan)
+                output(ID,zeroLoan)
+                this `fails with` "Only one request loan state should be created"
+            }
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `The output should be of type RequestLoanState`() {
+        ledgerServices.ledger {
+            transaction {
+                output(ID, requestLoan)
+                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                verifies() // As there are no input states.
+            }
+
+            transaction {
+                command(listOf(alice.publicKey, bob.publicKey), RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                output(ID,zeroLoan)
+                this `fails with` "The output should be of type RequestLoanState"
+            }
+        }
+    }
+
+    @Test
+    @Throws(Exception::class)
+    fun `Loan Request Should be signed by the borrower`() {
+        ledgerServices.ledger {
+            transaction {
+                output(ID, requestLoan)
+                command(alice.publicKey, RequestAndNegotiateLoanContract.Commands.RequestLoan())
+                verifies() // As there are no input states.
+            }
+
+//            transaction {
+//                command(charlie.partyKey, RequestAndNegotiateLoanContract.Commands.RequestLoan())
+//                output(ID,requestLoan)
+//                this `fails with` "Loan Request Should be signed by the borrower"
+//            }
         }
     }
 
