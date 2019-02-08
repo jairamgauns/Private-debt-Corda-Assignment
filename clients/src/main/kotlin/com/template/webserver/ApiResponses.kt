@@ -3,6 +3,7 @@ package com.template.webserver
 import com.template.LoanState
 import com.template.RequestLoanState
 import net.corda.core.identity.Party
+import java.time.Duration
 
 fun Party.toSimpleName(): String {
     return "${name.organisation} (${name.locality}, ${name.country})"
@@ -38,11 +39,13 @@ data class LoanStateSimpleObj(
         val interestRate: String,
         val loanAmountPaid: String,
         val paymentSchedule: String,
-        val requestTime: String,
+        val Instant: String,
+        val payCutOffTime: String,
         val status: String,
         val linearId: String)
 
 fun LoanState.toSimpleObj(): LoanStateSimpleObj {
+    val calcTime = requestTime + Duration.ofMinutes(paymentSchedule)
     return LoanStateSimpleObj(
             borrower.nameOrNull()!!.organisation,
             lender.nameOrNull()!!.organisation,
@@ -52,6 +55,7 @@ fun LoanState.toSimpleObj(): LoanStateSimpleObj {
             loanAmountPaid.toString(),
             paymentSchedule.toString(),
             requestTime.toString(),
+            calcTime.toString(),
             status,
             linearId.id.toString()
     )
