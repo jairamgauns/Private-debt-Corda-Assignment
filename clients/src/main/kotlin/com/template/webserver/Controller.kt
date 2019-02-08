@@ -191,7 +191,9 @@ class Controller(rpc: NodeRPCConnection) {
 
         return stateAndRef
                 .map { stateAndRef -> stateAndRef.state.data }
-                .map { loanState -> loanState.toSimpleObj() }
+                .map { loanState ->
+                    loanState.toSimpleObj()
+                }
     }
 
 }
